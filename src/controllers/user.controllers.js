@@ -1,4 +1,3 @@
-
 import User from '../models/user.models.js'
 import { validateRegister, validateLogin } from '../schemas/user.schemas.js'
 import bcryptjs from 'bcryptjs'
@@ -12,11 +11,11 @@ export const login = async (req, res) => {
 
     const userFound = await User.findOne({ email: result.data.email })
 
-    if (!userFound) return res.status(404).json(["User not found"])
+    if (!userFound) return res.status(404).json(['User not found'])
 
     const isMatch = await bcryptjs.compare(result.data.password, userFound.password)
 
-    if (!isMatch) return res.json(400).json(["Incorrect password"])
+    if (!isMatch) return res.json(400).json(['Incorrect password'])
 
     res.json({
       id: userFound._id,
@@ -60,6 +59,7 @@ export const register = async (req, res) => {
     res.status(500).json([error.message])
   }
 }
+
 export const profile = (req, res) => {
   res.send('Profile')
 }
