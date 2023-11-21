@@ -17,6 +17,10 @@ export const login = async (req, res) => {
 
     if (!isMatch) return res.json(400).json(['Incorrect password'])
 
+    const token = await createAccessToken({ id: userFound._id })
+
+    res.cookie('token', token)
+
     res.json({
       id: userFound._id,
       username: userFound.username,
@@ -44,7 +48,7 @@ export const register = async (req, res) => {
 
     const savedUser = await newUser.save()
 
-    const token = await createAccessToken({ id: savedUser.id })
+    const token = await createAccessToken({ id: savedUser._id })
 
     res.cookie('token', token)
 
@@ -62,4 +66,11 @@ export const register = async (req, res) => {
 
 export const profile = (req, res) => {
   res.send('Profile')
+}
+
+export const logout = (req, res) => {
+  res.cookie('token', '', {
+    expires: new Date(0)
+  })
+  return res.sendStatus(200)
 }
