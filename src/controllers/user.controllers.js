@@ -15,7 +15,7 @@ export const login = async (req, res) => {
 
     const isMatch = await bcryptjs.compare(result.data.password, userFound.password)
 
-    if (!isMatch) return res.json(400).json(['Incorrect password'])
+    if (!isMatch) return res.status(400).json(['Incorrect password'])
 
     const token = await createAccessToken({ id: userFound._id })
 
@@ -64,8 +64,16 @@ export const register = async (req, res) => {
   }
 }
 
-export const profile = (req, res) => {
-  res.send('Profile')
+export const profile = async (req, res) => {
+  const userFound = await User.findById(req.user.id)
+  if (!userFound) return res.status(404).json(['User not found'])
+  res.json({
+    id: userFound._id,
+    username: userFound.username,
+    email: userFound.email,
+    createdAt: userFound.createdAt,
+    updatedAt: userFound.updatedAt
+  })
 }
 
 export const logout = (req, res) => {
